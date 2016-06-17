@@ -1,0 +1,36 @@
+{%- extends 'layout.html' -%}
+{%- block content -%}
+
+	<div class="wrapper">
+
+		<form method="post">
+			
+			<h2>Signup</h2>
+
+			<label for="username">Username</label>
+			<input type="text" name="username" value="{{ name }}">
+			{%- if error -%}
+				<div class="error">{{ error['name'] }}</div>
+			{%- endif -%}
+			<label for="password">Password</label>
+			<input type="password" name="password" value="">
+			{%- if error -%}
+				<div class="error">{{ error['password'] }}</div>
+			{%- endif -%}
+			<label for="verify">Verify Password</label>
+			<input type="password" name="verify" value="">
+			{%- if error -%}
+				<div class="error">{{ error['verify'] }}</div>
+			{%- endif -%}
+			<label for="email">Email (optional)</label>
+			<input type="text" name="email" value="{{ email }}">
+			{%- if error -%}
+				<div class="error">{{ error['email'] }}</div>
+			{%- endif -%}
+			<input type="submit" value="Send">
+
+		</form>
+
+	</div>
+
+{%- endblock -%}

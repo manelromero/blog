@@ -1,0 +1,16 @@
+{%- extends 'layout.html' -%}
+{%- block content -%}
+
+<div class="post">
+	<div class="post-subject">
+		<a href="/{{ post.key().id() }}" class="subject-link">{{ post.subject }}</a>
+	</div>
+	<div class="post-created">
+		{{ post.created.strftime('%d/%m/%Y %H:%M') }}
+	</div>
+	<div class="post-content">
+		{{ post.text() | safe }}
+	</div>
+</div>
+
+{%- endblock -%}
