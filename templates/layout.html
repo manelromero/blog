@@ -14,11 +14,12 @@
 			<div class="title">
 				<a href="/" class="title-link">My blog</a>
 			</div>
-			<div class="new-post">
-				<a href="/newpost">New post</a>
-			</div>
+			{%- if user -%}
+				<div class="subtitle">
+					You are logged in as <span class="user">{{ user }}</span>, <a href="/logout">Log out </a>| <a href="/newpost">New post</a>
+				</div>
+			{%- endif -%}
 		</div>
-		<hr>
 		
 		{%- block content -%}{%- endblock -%}
 

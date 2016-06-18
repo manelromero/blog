@@ -5,7 +5,7 @@
 
 		<form method="post">
 			
-			<h2>Sign Up or <a href="/login">Log In</a></h2>
+			<h2>Log In or <a href="/signup">Sign Up</a></h2>
 
 			<label for="username">Username</label>
 			<input type="text" name="username" value="{{ name }}">
@@ -16,16 +16,6 @@
 			<input type="password" name="password" value="">
 			{%- if error -%}
 				<div class="error">{{ error['password'] }}</div>
-			{%- endif -%}
-			<label for="verify">Verify Password</label>
-			<input type="password" name="verify" value="">
-			{%- if error -%}
-				<div class="error">{{ error['verify'] }}</div>
-			{%- endif -%}
-			<label for="email">Email (optional)</label>
-			<input type="text" name="email" value="{{ email }}">
-			{%- if error -%}
-				<div class="error">{{ error['email'] }}</div>
 			{%- endif -%}
 			<input type="submit" value="Send">
 

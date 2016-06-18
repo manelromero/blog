@@ -3,7 +3,8 @@ import os
 import jinja2
 
 from entities import User, Post, Comment
-from helpers import validate
+from helpers import validate, make_pw_hash, make_secure_val, valid_pw,\
+    check_secure_val
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(
@@ -11,7 +12,7 @@ jinja_env = jinja2.Environment(
     autoescape=True
     )
 
-def render_str(template, **params):
+def render_str(template, **pams):
     t = jinja_env.get_template(template)
     return t.render(params)
 
@@ -54,7 +55,7 @@ class Home(Handler):
     def get(self):
         if self.user:
             posts = Post.get_all()
-            self.render('post.html', posts=posts)
+            self.render('post.html', posts=posts, user=self.user.name)
         else:
             self.redirect('/signup')
 
@@ -116,15 +117,17 @@ class LogIn(Handler):
         if not user:
             error['name'] = "User doesn't exist"
 
-        if not valid_pw(name, password, user.password):
-            error['password'] = "Invalid password"
+        name_ok = name and validate(name, '^[a-zA-Z0-9_-]{3,20}$')
+        if not name_ok:
+            error['name'] = "That's not a valid user name"
 
-        if not password:
-            error['password'] = "You have to introduce a password"
+        password_ok = password and valid_pw(name, password, user.password)
+        if not password_ok:
+            error['password'] = "Invalid password"
 
         if not error:
             self.login(user)
-            self.redirect('/welcome')
+            self.redirect('/')
 
         self.render('log-in.html', name=name, error=error)
 

@@ -1,4 +1,10 @@
 import re
+import random
+import string
+import hashlib
+import hmac
+
+secret = 'LeWURczMDUhGTikoMcBkAOYtz'
 
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
