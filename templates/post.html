@@ -5,10 +5,28 @@
 
 	<div class="post">
 		<div class="post-subject">
-			<a href="/{{ post.key().id() }}" class="subject-link">{{ post.subject }}</a>
+			{{ post.subject }}
+			<a href="/{{ post.key().id() }}" title="Permalink">
+				<img class="icon" src="static/img/link.svg" alt="permalink">
+			</a>
+			{%- if user_id == post.user_id -%}
+				<a href="/" title="Edit">
+					<img class="icon" src="static/img/edit.svg">
+				</a>
+				<a href="/" title="Delete">
+					<img class="icon" src="static/img/delete.svg">
+				</a>
+			{%- else -%}
+				<a href="/" title="Like">
+					<img class="icon" src="static/img/up.svg">
+				</a>
+				<a href="/" title="Dislike">
+					<img class="icon" src="static/img/down.svg">
+				</a>
+			{%- endif -%}
 		</div>
 		<div class="post-created">
-			{{ post.created.strftime('%d/%m/%Y %H:%M') }}
+			{{ post.created.strftime('%d/%m/%Y %H:%M') }} by { post.}
 		</div>
 		<div class="post-content">
 			{{ post.text() | safe }}

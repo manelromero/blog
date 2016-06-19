@@ -3,7 +3,15 @@
 
 <div class="post">
 	<div class="post-subject">
-		<a href="/{{ post.key().id() }}" class="subject-link">{{ post.subject }}</a>
+		{{ post.subject }}
+		{%- if user_id == post.user_id -%}
+			<a href="/">
+				<img class="icon" src="static/img/edit.svg">
+			</a>
+			<a href="/">
+				<img class="icon" src="static/img/delete.svg">
+			</a>
+		{%- endif -%}
 	</div>
 	<div class="post-created">
 		{{ post.created.strftime('%d/%m/%Y %H:%M') }}

@@ -19,6 +19,9 @@ class Post(db.Model):
 	subject = db.StringProperty(required=True)
 	content = db.TextProperty(required=True)
 	created = db.DateTimeProperty(auto_now_add=True)
+	last_edited = db.DateTimeProperty(auto_now=True)
+	user_id = db.IntegerProperty()
+	votes = db.IntegerProperty()
 
 	def text(self):
 		self._text = self.content.replace('\n', '<br>')
@@ -30,7 +33,7 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
-	subject = db.StringProperty(required=True)
+	user_id = db.IntegerProperty()
 	content = db.TextProperty(required=True)
 	created = db.DateTimeProperty(auto_now_add=True)
 

@@ -39,6 +39,9 @@ class Handler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
+    def uid(self):
+        return int(self.read_secure_cookie('user_id'))
+
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
@@ -55,9 +58,14 @@ class Home(Handler):
     def get(self):
         if self.user:
             posts = Post.get_all()
-            self.render('post.html', posts=posts, user=self.user.name)
+            self.render(
+                'post.html',
+                posts=posts,
+                user=self.user.name,
+                user_id=self.uid()
+                )
         else:
-            self.redirect('/signup')
+            self.redirect('/login')
 
 
 class SignUp(Handler):
@@ -95,7 +103,7 @@ class SignUp(Handler):
             user = User(name=name, password=pw_hash, email=email)
             user.put()
             self.login(user)
-            self.redirect('/welcome')
+            self.redirect('/')
 
         self.render('sign-up.html',
             name=name,
@@ -116,14 +124,10 @@ class LogIn(Handler):
         user = User.by_name(name)
         if not user:
             error['name'] = "User doesn't exist"
-
-        name_ok = name and validate(name, '^[a-zA-Z0-9_-]{3,20}$')
-        if not name_ok:
-            error['name'] = "That's not a valid user name"
-
-        password_ok = password and valid_pw(name, password, user.password)
-        if not password_ok:
-            error['password'] = "Invalid password"
+        else:
+            password_ok = password and valid_pw(name, password, user.password)
+            if not password_ok:
+                error['password'] = "Invalid password"
 
         if not error:
             self.login(user)
@@ -135,7 +139,7 @@ class LogIn(Handler):
 class LogOut(Handler):
     def get(self):
         self.logout()
-        self.redirect('/signup')
+        self.redirect('/login')
 
 
 class NewPost(Handler):
@@ -155,7 +159,11 @@ class NewPost(Handler):
         content = self.request.get('content')
 
         if subject and content:
-            post = Post(subject=subject, content=content)
+            post = Post(
+                subject=subject,
+                content=content,
+                user_id=self.uid()
+                )
             post.put()
             post_id = post.key().id()
             self.redirect('/' + str(post_id))
@@ -167,7 +175,7 @@ class NewPost(Handler):
 class PostLink(Handler):
     def get(self, post_id):
         post = Post.get_by_id(int(post_id))
-        self.render('permalink.html', post=post)
+        self.render('permalink.html', post=post, user_id=self.uid())
 
 
 app = webapp2.WSGIApplication([
