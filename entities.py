@@ -16,16 +16,22 @@ class User(db.Model):
 
 
 class Post(db.Model):
+	user = db.ReferenceProperty(User)
 	subject = db.StringProperty(required=True)
 	content = db.TextProperty(required=True)
 	created = db.DateTimeProperty(auto_now_add=True)
 	last_edited = db.DateTimeProperty(auto_now=True)
-	user_id = db.IntegerProperty()
-	votes = db.IntegerProperty()
+	votes = db.IntegerProperty(default=0)
 
 	def text(self):
 		self._text = self.content.replace('\n', '<br>')
 		return self._text
+
+	def upvote(self):
+		self.votes += 1
+
+	def downvote(self):
+		self.votes += 1
 
 	@classmethod
 	def get_all(cls):
@@ -33,16 +39,11 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
-	user_id = db.IntegerProperty()
+	post = db.ReferenceProperty(Post, collection_name='comments')
+	user = db.ReferenceProperty(User)
 	content = db.TextProperty(required=True)
 	created = db.DateTimeProperty(auto_now_add=True)
 
 	def text(self):
 		self._text = self.content.replace('\n', '<br>')
 		return self._text
-
-	@classmethod
-	def get_all(cls):
-		return cls.all().order('-created')
-
-

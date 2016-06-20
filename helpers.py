@@ -30,3 +30,7 @@ def valid_pw(name, password, h):
 def validate(value, pattern):
     prog = re.compile(pattern)
     return prog.match(value)
+
+def render_str(template, **pams):
+    t = jinja_env.get_template(template)
+    return t.render(params)

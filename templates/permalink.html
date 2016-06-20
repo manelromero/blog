@@ -3,22 +3,50 @@
 
 <div class="post">
 	<div class="post-subject">
-		{{ post.subject }}
-		{%- if user_id == post.user_id -%}
+		{{post.subject}}
+	</div>
+	<div class="post-created">
+		{%- if user.name == post.user.name -%}
 			<a href="/">
 				<img class="icon" src="static/img/edit.svg">
 			</a>
 			<a href="/">
 				<img class="icon" src="static/img/delete.svg">
 			</a>
+		{%- else -%}
+			<a href="/" title="Like">
+				<img class="icon" src="static/img/up.svg">
+			</a>
+			<a href="/" title="Dislike">
+				<img class="icon" src="static/img/down.svg">
+			</a>
 		{%- endif -%}
-	</div>
-	<div class="post-created">
-		{{ post.created.strftime('%d/%m/%Y %H:%M') }}
+		{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}}
 	</div>
 	<div class="post-content">
-		{{ post.text() | safe }}
+		{{post.text() | safe}}
 	</div>
 </div>
+
+{%- if post.comments.count() > 0 -%}
+<h3>Comments</h3>
+{%- for comment in post.comments.order('-created') -%}
+	<div class="comment">
+		<div class="comment-created">
+			On {{comment.created.strftime('%d/%m/%Y %H:%M')}} {{comment.user.name}} wrote:
+		</div>
+		<div class="comment-content">
+			{{comment.text() | safe}}
+		</div>
+	</div>
+{%- endfor -%}
+{%- endif -%}
+
+<form method="post">
+	<label class="permalink-label" for="content">Enter a new comment</label>
+	<textarea name="content" class="comment-text">{{content}}</textarea>
+	<div class="error">{{error}}</div>
+	<input type="submit" value="Submit">
+</form>
 
 {%- endblock -%}

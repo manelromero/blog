@@ -12,10 +12,6 @@ jinja_env = jinja2.Environment(
     autoescape=True
     )
 
-def render_str(template, **pams):
-    t = jinja_env.get_template(template)
-    return t.render(params)
-
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -40,7 +36,9 @@ class Handler(webapp2.RequestHandler):
         return cookie_val and check_secure_val(cookie_val)
 
     def uid(self):
-        return int(self.read_secure_cookie('user_id'))
+        uid = self.read_secure_cookie('user_id')
+        if uid:
+            return int(uid)
 
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
@@ -50,20 +48,15 @@ class Handler(webapp2.RequestHandler):
 
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
-        uid = self.read_secure_cookie('user_id')
-        self.user = uid and User.by_id(int(uid))
+        uid = self.uid()
+        self.user = uid and User.by_id(uid)
 
 
 class Home(Handler):
     def get(self):
         if self.user:
             posts = Post.get_all()
-            self.render(
-                'post.html',
-                posts=posts,
-                user=self.user.name,
-                user_id=self.uid()
-                )
+            self.render('post.html', posts=posts, user=self.user)
         else:
             self.redirect('/login')
 
@@ -143,7 +136,7 @@ class LogOut(Handler):
 
 
 class NewPost(Handler):
-    def render_new_post(self, subject="", content="", error=""):
+    def render_new_post(self, subject='', content='', error=''):
         self.render(
             'new-post.html',
             subject=subject,
@@ -162,7 +155,7 @@ class NewPost(Handler):
             post = Post(
                 subject=subject,
                 content=content,
-                user_id=self.uid()
+                user=User.by_id(self.uid())
                 )
             post.put()
             post_id = post.key().id()
@@ -173,9 +166,32 @@ class NewPost(Handler):
 
 
 class PostLink(Handler):
+    def render_post(self, post='', error='', user_id=''):
+        self.render('permalink.html',
+            post=post,
+            error=error,
+            user=self.user
+            )
+
     def get(self, post_id):
         post = Post.get_by_id(int(post_id))
-        self.render('permalink.html', post=post, user_id=self.uid())
+        self.render_post(post)
+
+    def post(self, post_id):
+        post = Post.get_by_id(int(post_id))
+        content = self.request.get('content')
+
+        if content:
+            comment = Comment(
+                post=post,
+                user=User.by_id(self.uid()),
+                content=content
+                )
+            comment.put()
+            self.render_post(post)
+        else:
+            error = "Your comment can't be empty"
+            self.render_post(post, error)
 
 
 app = webapp2.WSGIApplication([

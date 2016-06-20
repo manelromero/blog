@@ -15,7 +15,7 @@
 			</div>
 			{%- if user -%}
 				<div class="subtitle">
-					You are logged in as <strong>{{ user }}</strong>, <a href="/logout">Log out </a>| <a href="/newpost">New post</a>
+					You are logged in as <strong>{{user.name}}</strong>, <a href="/logout">Log out </a>| <a href="/newpost">New post</a>
 				</div>
 			{%- endif -%}
 		</div>
