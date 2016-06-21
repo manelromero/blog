@@ -19,14 +19,18 @@
 					<img class="icon" src="static/img/delete.svg">
 				</a>
 			{%- else -%}
-				<a href="{{post.upvote()}}" title="Like">
-					<img class="icon" src="static/img/up.svg">
-				</a>
-				<a href="/" title="Dislike">
-					<img class="icon" src="static/img/down.svg">
-				</a>
+				<form class="upvote" method="post">
+					<input type="hidden" name="post_id" value="{{post.key().id()}}">
+					<input type="hidden" name="vote" value="1">
+					<input type="submit" value="">
+				</form>
+				<form class="downvote" method="post">
+					<input type="hidden" name="post_id" value="{{post.key().id()}}">
+					<input type="hidden" name="vote" value="-1">
+					<input type="submit" value="">
+				</form>
 			{%- endif -%}
-			{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}} - {{post.votes}} votes
+			{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}} | votes {{post.sumVotes()}}
 			<div class="link-comments">
 				{%- if post.comments.count() > 0 -%}
 					<a href="/{{post.key().id()}}">See {{post.comments.count()}}

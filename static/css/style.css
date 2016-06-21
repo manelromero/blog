@@ -227,4 +227,34 @@ input[type="submit"]:focus {
 	padding-left: 1rem;
 }
 
+.upvote,
+.downvote {
+	display: inline;
+}
+
+.upvote input[type="submit"],
+.downvote input[type="submit"] {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	padding-right: 1.5rem;
+	cursor: pointer;
+	background: url('../img/up.svg') no-repeat;
+	height: 17px;
+	width: 17px;
+	opacity: 0.5;
+	transition: opacity 0.2s;
+}
+
+.downvote input[type="submit"] {
+	background: url('../img/down.svg') no-repeat;
+}
+
+.upvote input[type="submit"]:hover,
+.downvote input[type="submit"]:hover {
+	opacity: 1
+}
+
+
+
 

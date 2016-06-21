@@ -2,7 +2,7 @@ import webapp2
 import os
 import jinja2
 
-from entities import User, Post, Comment
+from entities import User, Post, Comment, Vote
 from helpers import validate, make_pw_hash, make_secure_val, valid_pw,\
     check_secure_val
 
@@ -56,9 +56,28 @@ class Home(Handler):
     def get(self):
         if self.user:
             posts = Post.get_all()
-            self.render('post.html', posts=posts, user=self.user)
+            self.render('home.html', posts=posts, user=self.user)
         else:
             self.redirect('/login')
+
+    def post(self):
+        post = Post.by_id(int(self.request.get('post_id')))
+        user = User.by_id(self.uid())
+        vote = int(self.request.get('vote'))
+
+        # prepare the new vote
+        new_vote = Vote(post=post, user=user, vote=vote)
+        # check the user has not voted on this post before
+        no_vote = True
+        votes = Vote.by_post(post)
+        for v in votes:
+            # if user has already voted thn False
+            if v.user.key().id() == self.user.key().id():
+                no_vote = False
+        if no_vote:
+            new_vote.put()
+
+        self.redirect('/')
 
 
 class SignUp(Handler):
@@ -159,7 +178,7 @@ class NewPost(Handler):
                 )
             post.put()
             post_id = post.key().id()
-            self.redirect('/' + str(post_id))
+            self.redirect('/')
         else:
             error = 'Sorry, we need both, title and content.'
             self.render_new_post(subject, content, error)
