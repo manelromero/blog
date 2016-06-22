@@ -1,0 +1,24 @@
+{%- extends 'layout.html' -%}
+{%- block content -%}
+
+	<div class="message">
+		Do you really want to delete this post?
+	</div>
+	<form method="post">
+		<input type="submit" value="Yes">
+	</form>
+	<a href="/"><button>No</button></a>
+
+	<div class="post">
+		<div class="post-subject">
+			{{post.subject}}
+		</div>
+		<div class="post-created">
+			{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}} | votes {{post.sumVotes()}}
+		</div>
+		<div class="post-content">
+			{{post.text() | safe}}
+		</div>
+	</div>
+
+{%- endblock -%}

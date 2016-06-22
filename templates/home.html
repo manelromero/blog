@@ -9,14 +9,14 @@
 		</div>
 		<div class="post-created">
 			<a href="/{{post.key().id()}}" title="Permalink">
-				<img class="icon" src="static/img/link.svg" alt="permalink">
+				<img class="icon" src="/static/img/link.svg" alt="permalink">
 			</a>
 			{%- if user.name == post.user.name -%}
-				<a href="/" title="Edit">
-					<img class="icon" src="static/img/edit.svg">
+				<a href="/edit/{{post.key().id()}}" title="Edit">
+					<img class="icon" src="/static/img/edit.svg">
 				</a>
-				<a href="/" title="Delete">
-					<img class="icon" src="static/img/delete.svg">
+				<a href="/delete/{{post.key().id()}}" title="Delete">
+					<img class="icon" src="/static/img/delete.svg">
 				</a>
 			{%- else -%}
 				<form class="upvote" method="post">

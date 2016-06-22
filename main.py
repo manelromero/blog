@@ -14,16 +14,25 @@ jinja_env = jinja2.Environment(
 
 
 class Handler(webapp2.RequestHandler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
+    # writes the response
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
+    # renders the jinja2 template
     def render_str(self, template, **kw):
         t = jinja_env.get_template(template)
         return t.render(kw)
 
+    # renders
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    # sets cookie
     def set_secure_cookie(self, name, val):
         cookie_val = make_secure_val(val)
         self.response.headers.add_header(
@@ -31,21 +40,26 @@ class Handler(webapp2.RequestHandler):
             '%s=%s; Path=/' % (name, cookie_val)
             )
 
+    # reads cookie
     def read_secure_cookie(self, name):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
+    # gets the user id
     def uid(self):
         uid = self.read_secure_cookie('user_id')
         if uid:
             return int(uid)
 
+    # logs the user out
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
+    # logs the user in
     def login(self, user):
         self.set_secure_cookie('user_id', str(user.key().id()))
 
+    # checks the user is logged in
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.uid()
@@ -53,6 +67,11 @@ class Handler(webapp2.RequestHandler):
 
 
 class Home(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def get(self):
         if self.user:
             posts = Post.get_all()
@@ -72,7 +91,7 @@ class Home(Handler):
         votes = Vote.by_post(post)
         for v in votes:
             # if user has already voted thn False
-            if v.user.key().id() == self.user.key().id():
+            if v.user.key().id() == self.uid():
                 no_vote = False
         if no_vote:
             new_vote.put()
@@ -81,6 +100,11 @@ class Home(Handler):
 
 
 class SignUp(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def get(self):
         self.render('sign-up.html')
 
@@ -103,7 +127,7 @@ class SignUp(Handler):
         if not password_ok:
             error['password'] = "That wasn't a valid password"
 
-        if email !='':
+        if email != '':
             if not validate(email, '^[\S]+@[\S]+.[\S]+$'):
                 error['email'] = "That's not a valid email"
 
@@ -117,14 +141,15 @@ class SignUp(Handler):
             self.login(user)
             self.redirect('/')
 
-        self.render('sign-up.html',
-            name=name,
-            email=email,
-            error=error
-            )
+        self.render('sign-up.html', name=name, email=email, error=error)
 
 
 class LogIn(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def get(self):
         self.render('log-in.html')
 
@@ -149,12 +174,22 @@ class LogIn(Handler):
 
 
 class LogOut(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def get(self):
         self.logout()
         self.redirect('/login')
 
 
 class NewPost(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def render_new_post(self, subject='', content='', error=''):
         self.render(
             'new-post.html',
@@ -177,7 +212,6 @@ class NewPost(Handler):
                 user=User.by_id(self.uid())
                 )
             post.put()
-            post_id = post.key().id()
             self.redirect('/')
         else:
             error = 'Sorry, we need both, title and content.'
@@ -185,12 +219,13 @@ class NewPost(Handler):
 
 
 class PostLink(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     def render_post(self, post='', error='', user_id=''):
-        self.render('permalink.html',
-            post=post,
-            error=error,
-            user=self.user
-            )
+        self.render('permalink.html', post=post, error=error, user=self.user)
 
     def get(self, post_id):
         post = Post.get_by_id(int(post_id))
@@ -213,13 +248,58 @@ class PostLink(Handler):
             self.render_post(post, error)
 
 
+class EditPost(NewPost):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
+    def get(self, post_id):
+        post = Post.get_by_id(int(post_id))
+        self.render('edit-post.html', post=post, user=self.user)
+
+    def post(self, post_id):
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+
+        if subject and content:
+            post = Post.by_id(int(post_id))
+            if post.user.key().id() == self.uid():
+                post.subject = subject
+                post.content = content
+                post.put()
+            self.redirect('/')
+        else:
+            error = 'Sorry, we need both, title and content.'
+            self.render_new_post(subject, content, error)
+
+
+class DeletePost(Handler):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
+    def get(self, post_id):
+        post = Post.get_by_id(int(post_id))
+        self.render('delete-post.html', post=post, user=self.user)
+
+    def post(self, post_id):
+        post = Post.get_by_id(int(post_id))
+        if post.user.key().id() == self.uid():
+            post.delete()
+        self.redirect('/')
+
+
 app = webapp2.WSGIApplication([
     ('/', Home),
     ('/signup', SignUp),
     ('/login', LogIn),
     ('/logout', LogOut),
     ('/newpost', NewPost),
-    ('/([0-9]+)', PostLink)
+    ('/([0-9]+)', PostLink),
+    ('/delete/([0-9]+)', DeletePost),
+    ('/edit/([0-9]+)', EditPost)
     ], debug=True)
 
 

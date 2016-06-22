@@ -122,23 +122,26 @@ textarea {
     border: 1px solid #ccc;
 }
 
-input[type="submit"] {
-	display: block;
+input[type="submit"],
+button {
     font: 600 1rem 'Open Sans', sans-serif;
 	background-color: rgba(191, 0, 0, 0.6);
 	color: #fff;
 	padding: 0.3rem 1.2rem;
 	margin-top: 1rem;
+	cursor: pointer;
 	outline: 0;
 	border: 0;
 	transition: background-color 0.3s;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover,
+button:hover {
 	background-color: rgba(191, 0, 0, 1);
 }
 
-input[type="submit"]:focus {
+input[type="submit"]:focus,
+button:focus {
 	background-color: rgba(191, 0, 0, 0.6);
 }
 
@@ -159,7 +162,7 @@ input[type="submit"]:focus {
 	font: 600 1.5rem 'Open Sans', sans-serif;
     margin: -1rem -1rem 0 -1rem;
     padding: 0.5rem 1rem 0 1rem;
-    background-color: #e3e3e3;
+    background-color: #e8e7d5;
 }
 
 .subject-link {
@@ -177,7 +180,7 @@ input[type="submit"]:focus {
     color: #999;
     margin: 0 -1rem;
     padding: 0.5rem 1rem 0.5rem 1rem;
-    background-color: #e3e3e3;
+    background-color: #e8e7d5;
 }
 
 .post-content {
@@ -253,6 +256,15 @@ input[type="submit"]:focus {
 .upvote input[type="submit"]:hover,
 .downvote input[type="submit"]:hover {
 	opacity: 1
+}
+
+.message {
+	font: 600 1rem 'Open Sans', sans-serif;
+	color: #bf0000;
+}
+
+button {
+	min-width: 65px;
 }
 
 

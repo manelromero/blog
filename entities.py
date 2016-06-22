@@ -2,6 +2,11 @@ from google.appengine.ext import db
 
 
 class User(db.Model):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     name = db.StringProperty(required=True)
     password = db.StringProperty(required=True)
     email = db.StringProperty()
@@ -17,6 +22,11 @@ class User(db.Model):
 
 
 class Post(db.Model):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     user = db.ReferenceProperty(User)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
@@ -43,6 +53,11 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     post = db.ReferenceProperty(Post, collection_name='comments')
     user = db.ReferenceProperty(User)
     content = db.TextProperty(required=True)
@@ -54,6 +69,11 @@ class Comment(db.Model):
 
 
 class Vote(db.Model):
+    """
+    Handler class
+    -----------------------------------------------------------------
+    Contains all needed functions for the rest handlers to inheritate
+    """
     post = db.ReferenceProperty(Post, collection_name='votes')
     user = db.ReferenceProperty(User, collection_name='votes')
     vote = db.IntegerProperty()
