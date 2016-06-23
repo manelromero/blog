@@ -7,11 +7,11 @@
 	</div>
 	<div class="post-created">
 		{%- if user.name == post.user.name -%}
-			<a href="/">
-				<img class="icon" src="static/img/edit.svg">
+			<a href="/edit/{{post.key().id()}}" title="Edit">
+				<img class="icon" src="/static/img/edit.svg">
 			</a>
-			<a href="/">
-				<img class="icon" src="static/img/delete.svg">
+			<a href="/delete/{{post.key().id()}}" title="Delete">
+				<img class="icon" src="/static/img/delete.svg">
 			</a>
 		{%- endif -%}
 		{{post.last_edited.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}}
@@ -25,6 +25,14 @@
 <h3>Comments</h3>
 {%- for comment in post.comments.order('-created') -%}
 	<div class="comment">
+		{%- if comment.user.name == user.name -%}
+			<a href="/">
+				<img class="icon" src="/static/img/edit.svg">
+			</a>
+			<a href="/">
+				<img class="icon" src="/static/img/delete.svg">
+			</a>
+		{%- endif -%}
 		<div class="comment-created">
 			On {{comment.created.strftime('%d/%m/%Y %H:%M')}}, {{comment.user.name}} wrote:
 		</div>

@@ -203,6 +203,7 @@ input[type="submit"]:focus {
 }
 
 .comment-created {
+	display: inline-block;
 	font: 400 0.8rem 'Open Sans', sans-serif;
 	color: #999;
 }
