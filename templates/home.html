@@ -30,7 +30,7 @@
 					<input type="submit" value="">
 				</form>
 			{%- endif -%}
-			{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}} | votes {{post.sumVotes()}}
+			{{post.last_edited.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}} | votes {{post.sumVotes()}}
 			<div class="link-comments">
 				{%- if post.comments.count() > 0 -%}
 					<a href="/{{post.key().id()}}">See {{post.comments.count()}}

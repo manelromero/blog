@@ -3,9 +3,9 @@ from google.appengine.ext import db
 
 class User(db.Model):
     """
-    Handler class
-    -----------------------------------------------------------------
-    Contains all needed functions for the rest handlers to inheritate
+    User entity class
+    -----------------------------------------------------------------------
+    Stores all user data. Declares methods for getting users by id and name
     """
     name = db.StringProperty(required=True)
     password = db.StringProperty(required=True)
@@ -23,14 +23,15 @@ class User(db.Model):
 
 class Post(db.Model):
     """
-    Handler class
-    -----------------------------------------------------------------
-    Contains all needed functions for the rest handlers to inheritate
+    Post entity class
+    ------------------------------------------------------------------------
+    Stores all posts. It has an user reference property, methods for getting
+    all posts and post by id. Declares functions to include safe HTML code in
+    the post content and manage post voting
     """
     user = db.ReferenceProperty(User)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
     last_edited = db.DateTimeProperty(auto_now=True)
 
     def text(self):
@@ -49,14 +50,15 @@ class Post(db.Model):
 
     @classmethod
     def get_all(cls):
-        return cls.all().order('-created')
+        return cls.all().order('-last_edited')
 
 
 class Comment(db.Model):
     """
-    Handler class
-    -----------------------------------------------------------------
-    Contains all needed functions for the rest handlers to inheritate
+    Comment entity class
+    --------------------------------------------------------------------------
+    Stores all comments. It has post and user reference properties. Declares a
+    function to include safe HTML code in the comment content
     """
     post = db.ReferenceProperty(Post, collection_name='comments')
     user = db.ReferenceProperty(User)
@@ -70,9 +72,11 @@ class Comment(db.Model):
 
 class Vote(db.Model):
     """
-    Handler class
-    -----------------------------------------------------------------
-    Contains all needed functions for the rest handlers to inheritate
+    Vote entity class
+    ---------------------------------------------------------------------------
+    Stores all votes. It has post and user reference properties and a method to
+    get all comments of a post used for checking that any user doesn't vote
+    more than once on a post
     """
     post = db.ReferenceProperty(Post, collection_name='votes')
     user = db.ReferenceProperty(User, collection_name='votes')

@@ -11,13 +11,18 @@
 	<div class="bar">
 		<div class="bar-container">
 			<div class="title">
-				<a href="/" class="title-link">My blog</a>
+				<a href="/" class="title-link">Manel's Blog</a>
 			</div>
-			{%- if user -%}
-				<div class="subtitle">
-					You are logged in as <strong>{{user.name}}</strong>, <a href="/logout">Log out </a>| <a href="/newpost">New post</a>
-				</div>
-			{%- endif -%}
+			<div class="subtitle">
+				{%- if user -%}
+					You are logged in as <strong>{{user.name}}</strong>, <a href="/logout">Log out </a>
+					{%- if not new -%}
+					| <a href="/newpost">New post</a>
+					{%- endif -%}
+				{%- else -%}
+					You are not logged in, <a href="/login">Log In</a> or <a href="/signup">Sign Up</a>
+				{%- endif -%}
+			</div>
 		</div>
 	</div>
 

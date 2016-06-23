@@ -13,15 +13,8 @@
 			<a href="/">
 				<img class="icon" src="static/img/delete.svg">
 			</a>
-		{%- else -%}
-			<a href="/" title="Like">
-				<img class="icon" src="static/img/up.svg">
-			</a>
-			<a href="/" title="Dislike">
-				<img class="icon" src="static/img/down.svg">
-			</a>
 		{%- endif -%}
-		{{post.created.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}}
+		{{post.last_edited.strftime('%d/%m/%Y %H:%M')}} by {{post.user.name}}
 	</div>
 	<div class="post-content">
 		{{post.text() | safe}}
@@ -33,7 +26,7 @@
 {%- for comment in post.comments.order('-created') -%}
 	<div class="comment">
 		<div class="comment-created">
-			On {{comment.created.strftime('%d/%m/%Y %H:%M')}} {{comment.user.name}} wrote:
+			On {{comment.created.strftime('%d/%m/%Y %H:%M')}}, {{comment.user.name}} wrote:
 		</div>
 		<div class="comment-content">
 			{{comment.text() | safe}}
@@ -44,7 +37,7 @@
 
 <form method="post">
 	<label class="permalink-label" for="content">Enter a new comment</label>
-	<textarea name="content" class="comment-text">{{content}}</textarea>
+	<textarea name="content" class="comment-text" autofocus>{{content}}</textarea>
 	<div class="error">{{error}}</div>
 	<input type="submit" value="Submit">
 </form>
