@@ -1,0 +1,23 @@
+{%- extends 'layout.html' -%}
+{%- block content -%}
+
+	<div class="message">
+		Do you really want to delete this comment?
+	</div>
+	<form method="post">
+		<input type="submit" value="Yes">
+	</form>
+	<div class="back">
+		<a href="/"><< Back</a>
+	</div>
+
+	<div class="comment">
+		<div class="comment-created">
+			On {{comment.created.strftime('%d/%m/%Y %H:%M')}}, {{comment.user.name}} wrote:
+		</div>
+		<div class="comment-content">
+			{{comment.text() | safe}}
+		</div>
+	</div>
+
+{%- endblock -%}

@@ -288,8 +288,8 @@ class PostLink(Handler):
 class EditPost(NewPost):
     """
     EditPost class
-    -----------------------------------------------------
-    Shows the edit page with the post content for editing
+    ----------------------------------------------------------
+    Shows the edit post page with the post content for editing
     """
     # renders the HTML page with the edit form
     def get(self, post_id):
@@ -323,8 +323,8 @@ class EditPost(NewPost):
 class DeletePost(Handler):
     """
     DeletePost class
-    --------------------------------------------------------------
-    Shows de delete page and if user press 'yes', deletes the post
+    --------------------------------------------------------------------
+    Shows the delete post page and if user press 'yes', deletes the post
     """
     # renders the HTML page with the delete form
     def get(self, post_id):
@@ -340,6 +340,59 @@ class DeletePost(Handler):
         self.redirect('/')
 
 
+class EditComment(NewPost):
+    """
+    EditComment class
+    ----------------------------------------------------------------
+    Shows the comment edit page with the comment content for editing
+    """
+    # renders the HTML page with the edit form
+    def get(self, comment_id):
+        comment = Comment.get_by_id(int(comment_id))
+        self.render('edit-comment.html', comment=comment, user=self.user)
+
+    # gets form values
+    def post(self, comment_id):
+        comment = Comment.by_id(int(comment_id))
+        content = self.request.get('content')
+        # check if we have content
+        if content:
+            # check if the user is the comment owner or somebody cheating
+            if comment.user.key().id() == self.uid():
+                comment.content = content
+                comment.put()
+            self.redirect('/')
+        # if content is missing, let's show it to the user
+        else:
+            error = 'Sorry, we need some content.'
+            self.render(
+                'edit-comment.html',
+                comment=comment,
+                user=self.user,
+                error=error
+                )
+
+
+class DeleteComment(Handler):
+    """
+    DeleteComment class
+    --------------------------------------------------------------------------
+    Shows the delete comment page and if user press 'yes', deletes the comment
+    """
+    # renders the HTML page with the delete form
+    def get(self, comment_id):
+        comment = Comment.get_by_id(int(comment_id))
+        self.render('delete-comment.html', comment=comment, user=self.user)
+
+    # if user press 'yes'
+    def post(self, comment_id):
+        comment = Comment.get_by_id(int(comment_id))
+        # check if the user is the post owner
+        if comment.user.key().id() == self.uid():
+            comment.delete()
+        self.redirect('/')
+
+
 app = webapp2.WSGIApplication([
     ('/', Home),
     ('/signup', SignUp),
@@ -347,6 +400,8 @@ app = webapp2.WSGIApplication([
     ('/logout', LogOut),
     ('/newpost', NewPost),
     ('/([0-9]+)', PostLink),
-    ('/delete/([0-9]+)', DeletePost),
-    ('/edit/([0-9]+)', EditPost)
+    ('/delete-post/([0-9]+)', DeletePost),
+    ('/delete-comment/([0-9]+)', DeleteComment),
+    ('/edit-post/([0-9]+)', EditPost),
+    ('/edit-comment/([0-9]+)', EditComment)
     ], debug=True)

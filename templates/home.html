@@ -12,10 +12,10 @@
 				<img class="icon" src="/static/img/link.svg" alt="permalink">
 			</a>
 			{%- if user.name == post.user.name -%}
-				<a href="/edit/{{post.key().id()}}" title="Edit">
+				<a href="/edit-post/{{post.key().id()}}" title="Edit">
 					<img class="icon" src="/static/img/edit.svg">
 				</a>
-				<a href="/delete/{{post.key().id()}}" title="Delete">
+				<a href="/delete-post/{{post.key().id()}}" title="Delete">
 					<img class="icon" src="/static/img/delete.svg">
 				</a>
 			{%- else -%}

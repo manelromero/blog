@@ -69,6 +69,10 @@ class Comment(db.Model):
         self._text = self.content.replace('\n', '<br>')
         return self._text
 
+    @classmethod
+    def by_id(cls, pid):
+        return cls.get_by_id(pid)
+
 
 class Vote(db.Model):
     """

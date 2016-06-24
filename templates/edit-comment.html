@@ -1,0 +1,21 @@
+{%- extends 'layout.html' -%}
+{%- block content -%}
+
+<h2>Edit comment</h2>
+
+<form method="post" action=>
+	
+	<label for="content">Comment</label>
+	<textarea name="content">{{ comment.content }}</textarea>
+
+	<div class="error">{{ error }}</div>
+
+	<input type="submit" value="Submit">
+
+	<div class="back">
+		<a href="/"><< Back</a>
+	</div>
+
+</form>
+
+{%- endblock -%}
